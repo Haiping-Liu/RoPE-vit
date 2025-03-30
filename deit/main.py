@@ -7,7 +7,7 @@ import time
 import torch
 import torch.backends.cudnn as cudnn
 import json
-
+import torch
 from pathlib import Path
 
 from timm.data import Mixup
@@ -143,9 +143,9 @@ def get_args_parser():
                         help='Do not random erase first (clean) augmentation split')
 
     # * Mixup params
-    parser.add_argument('--mixup', type=float, default=0.8,
+    parser.add_argument('--mixup', type=float, default=0.0,
                         help='mixup alpha, mixup enabled if > 0. (default: 0.8)')
-    parser.add_argument('--cutmix', type=float, default=1.0,
+    parser.add_argument('--cutmix', type=float, default=0.0,
                         help='cutmix alpha, cutmix enabled if > 0. (default: 1.0)')
     parser.add_argument('--cutmix-minmax', type=float, nargs='+', default=None,
                         help='cutmix min/max ratio, overrides alpha and enables cutmix if set (default: None)')
@@ -172,7 +172,7 @@ def get_args_parser():
     parser.add_argument('--attn-only', action='store_true') 
     
     # Dataset parameters
-    parser.add_argument('--data-path', default='../data/depth_data', type=str,
+    parser.add_argument('--data-path', default='/root/autodl-tmp', type=str,
                         help='dataset path')
     parser.add_argument('--data-set', default='IMNET', choices=['CIFAR', 'IMNET', 'INAT', 'INAT19'],
                         type=str, help='Image Net dataset path')
@@ -182,7 +182,7 @@ def get_args_parser():
 
     parser.add_argument('--output_dir', default='',
                         help='path where to save, empty for no saving')
-    parser.add_argument('--device', default='cpu',
+    parser.add_argument('--device', default='cuda',
                         help='device to use for training / testing')
     parser.add_argument('--seed', default=0, type=int)
     parser.add_argument('--resume', default='', help='resume from checkpoint')
@@ -206,7 +206,9 @@ def get_args_parser():
 
 
     # Finetuning params
-    parser.add_argument('--depth_data_path', default='../data/depth_data', type=Path,
+    parser.add_argument('--depth_data_path', default='/root/autodl-tmp', type=Path,
+                        help='depth dataset path')
+    parser.add_argument('--train_one_epoch_depth', default='/root/autodl-tmp', type=Path,
                         help='depth dataset path')
     parser.add_argument('--depth_model', default='rope_mixed_depth_deit_base', type=str, metavar='MODEL',
                         help='fine tune model')
@@ -288,6 +290,7 @@ def main(args):
             label_smoothing=args.smoothing, num_classes=args.nb_classes)
 
     print(f"Creating model: {args.model}")
+
     # model = create_model(
     #     args.model,
     #     pretrained=False,
@@ -429,9 +432,12 @@ def main(args):
 
     # wrap the criterion in our custom DistillationLoss, which
     # just dispatches to the original criterion if args.distillation_type is 'none'
-    criterion = DistillationLoss(
-        criterion, teacher_model, args.distillation_type, args.distillation_alpha, args.distillation_tau
-    )
+
+    # criterion = DistillationLoss(
+    #     criterion, teacher_model, args.distillation_type, args.distillation_alpha, args.distillation_tau
+    # )
+
+    criterion = torch.nn.MSELoss()
 
     output_dir = Path(args.output_dir)
     if args.resume:
@@ -458,6 +464,8 @@ def main(args):
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
     max_accuracy = 0.0
+
+
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             data_loader_train.sampler.set_epoch(epoch)
@@ -486,24 +494,24 @@ def main(args):
              
 
         test_stats = evaluate_depth(data_loader_val, model, device)
-        print(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
+        # print(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
         
-        if max_accuracy < test_stats["acc1"]:
-            max_accuracy = test_stats["acc1"]
-            if args.output_dir:
-                checkpoint_paths = [output_dir / 'best_checkpoint.pth']
-                for checkpoint_path in checkpoint_paths:
-                    utils.save_on_master({
-                        'model': model_without_ddp.state_dict(),
-                        'optimizer': optimizer.state_dict(),
-                        'lr_scheduler': lr_scheduler.state_dict(),
-                        'epoch': epoch,
-                        'model_ema': get_state_dict(model_ema),
-                        'scaler': loss_scaler.state_dict(),
-                        'args': args,
-                    }, checkpoint_path)
+        # if max_accuracy < test_stats["acc1"]:
+        #     max_accuracy = test_stats["acc1"]
+        #     if args.output_dir:
+        #         checkpoint_paths = [output_dir / 'best_checkpoint.pth']
+        #         for checkpoint_path in checkpoint_paths:
+        #             utils.save_on_master({
+        #                 'model': model_without_ddp.state_dict(),
+        #                 'optimizer': optimizer.state_dict(),
+        #                 'lr_scheduler': lr_scheduler.state_dict(),
+        #                 'epoch': epoch,
+        #                 'model_ema': get_state_dict(model_ema),
+        #                 'scaler': loss_scaler.state_dict(),
+        #                 'args': args,
+        #             }, checkpoint_path)
             
-        print(f'Max accuracy: {max_accuracy:.2f}%')
+        # print(f'Max accuracy: {max_accuracy:.2f}%')
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      **{f'test_{k}': v for k, v in test_stats.items()},

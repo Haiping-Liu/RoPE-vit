@@ -43,7 +43,6 @@ def compute_mixed_cis(freqs, t_x, t_y, num_heads):
 
     return freqs_cis
 
-
 def compute_axial_cis(dim: int, end_x: int, end_y: int, theta: float = 100.0):
     freqs_x = 1.0 / (theta ** (torch.arange(0, dim, 4)[: (dim // 4)].float() / dim))
     freqs_y = 1.0 / (theta ** (torch.arange(0, dim, 4)[: (dim // 4)].float() / dim))
@@ -76,18 +75,41 @@ def reshape_for_broadcast(freqs_cis: torch.Tensor, x: torch.Tensor):
     return freqs_cis.view(*shape)
 
 
+# 在预测depth的时候，不能使用这个函数
+# def apply_rotary_emb(
+#     xq: torch.Tensor,
+#     xk: torch.Tensor,
+#     freqs_cis: torch.Tensor,
+# ) -> Tuple[torch.Tensor, torch.Tensor]:
+#     xq_ = torch.view_as_complex(xq.float().reshape(*xq.shape[:-1], -1, 2))
+#     xk_ = torch.view_as_complex(xk.float().reshape(*xk.shape[:-1], -1, 2))
+#     freqs_cis = reshape_for_broadcast(freqs_cis, xq_)
+#     xq_out = torch.view_as_real(xq_ * freqs_cis).flatten(3)
+#     xk_out = torch.view_as_real(xk_ * freqs_cis).flatten(3)
+#     return xq_out.type_as(xq).to(xq.device), xk_out.type_as(xk).to(xk.device)
+
 def apply_rotary_emb(
     xq: torch.Tensor,
     xk: torch.Tensor,
     freqs_cis: torch.Tensor,
 ) -> Tuple[torch.Tensor, torch.Tensor]:
-    xq_ = torch.view_as_complex(xq.float().reshape(*xq.shape[:-1], -1, 2))
-    xk_ = torch.view_as_complex(xk.float().reshape(*xk.shape[:-1], -1, 2))
+    # 使用clone()创建副本，防止原地操作
+    xq_reshaped = xq.float().reshape(*xq.shape[:-1], -1, 2).clone()
+    xk_reshaped = xk.float().reshape(*xk.shape[:-1], -1, 2).clone()
+    
+    xq_ = torch.view_as_complex(xq_reshaped)
+    xk_ = torch.view_as_complex(xk_reshaped)
+    
     freqs_cis = reshape_for_broadcast(freqs_cis, xq_)
-    xq_out = torch.view_as_real(xq_ * freqs_cis).flatten(3)
-    xk_out = torch.view_as_real(xk_ * freqs_cis).flatten(3)
+    
+    # 显式使用新变量接收乘法结果，避免原地修改
+    xq_rotated = xq_ * freqs_cis
+    xk_rotated = xk_ * freqs_cis
+    
+    xq_out = torch.view_as_real(xq_rotated).flatten(3)
+    xk_out = torch.view_as_real(xk_rotated).flatten(3)
+    
     return xq_out.type_as(xq).to(xq.device), xk_out.type_as(xk).to(xk.device)
-
 
 class RoPEAttention(Attention):
     """Multi-head Attention block with relative position embeddings."""
@@ -317,90 +339,6 @@ def rope_mixed_ape_deit_large_patch16_LS(pretrained=False, img_size=224, pretrai
         rope_theta=10.0, rope_mixed=True, use_ape=True, **kwargs)
     return model
 
-
-# coord predictor
-class CoordPredictor(nn.Module):
-    def __init__(self, backbone, embed_dim, num_outputs=2):
-        """
-        backbone: 预训练的 ViT 模型（不含 head）
-        embed_dim: ViT 输出维度
-        num_outputs: 通常是2，表示(x, y)
-        """
-        super().__init__()
-        self.backbone = backbone
-        self.coord_head = nn.Sequential(
-            nn.Linear(embed_dim, embed_dim),
-            nn.ReLU(),
-            nn.Linear(embed_dim, num_outputs)
-        )
-
-    def forward(self, x):
-        """
-        x: 输入图像 [B, 3, 224, 224]
-        return: 每个 patch 的 (x, y) 坐标预测，shape: [B, N_patch, 2]
-        """
-        B, C, H, W = x.shape
-        patch_tokens = self.backbone.patch_embed(x)  # [B, N, D]
-        
-        if self.backbone.pos_embed is not None:
-            patch_tokens = patch_tokens + self.backbone.pos_embed[:, 1:, :]  # 跳过cls token的位置编码
-            
-        # 计算 freqs_cis
-        if self.backbone.rope_mixed:
-            t_x, t_y = init_t_xy(end_x = W // self.backbone.patch_size, 
-                                end_y = H // self.backbone.patch_size)
-            t_x, t_y = t_x.to(x.device), t_y.to(x.device)
-            freqs_cis = self.backbone.compute_cis(self.backbone.freqs, t_x, t_y)
-            
-            for i, blk in enumerate(self.backbone.blocks):
-                patch_tokens = blk(patch_tokens, freqs_cis=freqs_cis[i])
-        else:
-            freqs_cis = self.backbone.compute_cis(
-                end_x = W // self.backbone.patch_size,
-                end_y = H // self.backbone.patch_size
-            ).to(x.device)
-            
-            for blk in self.backbone.blocks:
-                patch_tokens = blk(patch_tokens, freqs_cis=freqs_cis)
-            
-        patch_tokens = self.backbone.norm(patch_tokens)
-        
-        coords = self.coord_head(patch_tokens)  # [B, N, num_outputs]
-        return coords
-
-@register_model
-def rope_axial_coord_predictor_tiny(pretrained=False, **kwargs):
-    backbone = create_model(
-        'rope_axial_deit_small_patch16_LS',
-        pretrained=pretrained,
-        **kwargs
-    )
-    model = CoordPredictor(
-        backbone=backbone,
-        embed_dim=384,  
-        num_outputs=6   # x,y坐标
-    )
-    model.default_cfg = _cfg()
-    
-    return model
-
-@register_model
-def rope_mixed_coord_predictor_tiny(pretrained=False, **kwargs):
-    backbone = create_model(
-        'rope_mixed_deit_small_patch16_LS', 
-        pretrained=pretrained,
-        **kwargs
-    )
-    
-    model = CoordPredictor(
-        backbone=backbone,
-        embed_dim=384,  
-        num_outputs=6
-    )
-    
-    model.default_cfg = _cfg() 
-    return model
-
 # depth predictor
 class DepthHead(nn.Module):
     def __init__(self, embed_dim, patch_size=16):
@@ -425,11 +363,12 @@ class DepthHead(nn.Module):
         # Reshape from [B, N, D] to [B, H, W, D] to restore 2D spatial structure
         # Then permute to [B, D, H, W] for standard image format
         x = x.reshape(B, H, W, D).permute(0, 3, 1, 2)
+    
         
         # Upsample from patch-level to pixel-level
         # Input: [B, D, H, W] where H,W = image_size/patch_size
         # Output: [B, D, H*patch_size, W*patch_size] = [B, D, image_size, image_size]
-        x = F.interpolate(x, scale_factor=self.patch_size, mode='bilinear', align_corners=False)
+        #  x = F.interpolate(x, scale_factor=self.patch_size, mode='bilinear', align_corners=False)
         
         # Apply depth head
         # First permute to [B, H*patch_size, W*patch_size, D] for linear layers

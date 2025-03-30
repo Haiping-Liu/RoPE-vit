@@ -127,7 +127,9 @@ def train_one_epoch_depth(model: torch.nn.Module, criterion: torch.nn.Module,
         samples = samples.to(device, non_blocking=True)  
         targets = targets.to(device, non_blocking=True)  
 
-        outputs = model(samples)  # [B, 6]
+        outputs = model(samples) 
+        outputs = torch.nn.functional.interpolate(outputs.clone(), size=targets.shape[2:], mode='bilinear', align_corners=False)
+
         loss = criterion(outputs, targets)  # MSELoss
 
         loss_value = loss.item()
@@ -163,6 +165,8 @@ def evaluate_depth(data_loader, model, device):
 
         with torch.cuda.amp.autocast(enabled=False): 
             outputs = model(images)
+            outputs = torch.nn.functional.interpolate(outputs.clone(), size=targets.shape[2:], mode='bilinear', align_corners=False)
+
             loss = criterion(outputs, targets)
 
         metric_logger.update(loss=loss.item())

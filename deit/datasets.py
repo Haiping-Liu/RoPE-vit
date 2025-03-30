@@ -109,66 +109,7 @@ def build_transform(is_train, args):
     t.append(transforms.ToTensor())
     t.append(transforms.Normalize(IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD))
     return transforms.Compose(t)
-
-class CoordDataset(Dataset):
-    def __init__(self, root_dir, train=True, transform=None):
-        """
-        root_dir: 数据集根目录
-        train: 是否为训练集
-        transform: 数据增强
-        """
-        self.root_dir = root_dir
-        self.train = train
-        self.transform = transform
-        if transform is None:
-            # 如果没有提供transform，使用基础转换
-            self.transform = transforms.Compose([
-                transforms.ToTensor(),
-                transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                                  std=[0.229, 0.224, 0.225])
-            ])
-        
-        self.image_paths = sorted([
-            os.path.join(root_dir, f)
-            for f in os.listdir(root_dir) if f.endswith((".png"))
-        ])
-        
-        self.labels = pd.read_csv(os.path.join(root_dir, "labels.csv"))
-        
-        num_samples = len(self.image_paths)
-        num_train = int(num_samples * 0.8)
-        
-        if train:
-            self.image_paths = self.image_paths[:num_train]
-            self.labels = self.labels.iloc[:num_train]
-        else:
-            self.image_paths = self.image_paths[num_train:]
-            self.labels = self.labels.iloc[num_train:]
-
-    def __len__(self):
-        return len(self.image_paths)
-
-    def __getitem__(self, idx):
-        # 读取图像
-        image = Image.open(self.image_paths[idx]).convert("RGB")
-        # 转换图像为tensor
-        image = self.transform(image)  # 现在image一定是tensor
-
-        # 获取并转换坐标
-        coords = self.labels.iloc[idx, 1:].values.astype(np.float32)
-        coords = torch.tensor(coords, dtype=torch.float32)
-        
-        return image, coords
-
-def build_coord_dataset(is_train, args):
-    # transform = build_transform(is_train, args)
-    dataset = CoordDataset(
-        root_dir=args.data_path,
-        train=is_train,
-        transform=None
-    )
-    return dataset 
-
+     
 class DepthDataset(Dataset):
     def __init__(self, root_dir, input_size=224, train=True):
         self.root_dir = root_dir
@@ -205,10 +146,9 @@ class DepthDataset(Dataset):
 
         return image, depth
 
-
 def build_depth_dataset(is_train, args):
     dataset = DepthDataset(
-        root_dir=args.data_path,
+        root_dir=args.depth_data_path,
         train=is_train
     )
     return dataset
