@@ -18,7 +18,7 @@ from timm.optim import create_optimizer
 from timm.utils import NativeScaler, get_state_dict, ModelEma
 
 from datasets import build_dataset, build_depth_dataset
-from engine import train_one_epoch, evaluate, train_one_epoch_depth, evaluate_depth
+from engine import train_one_epoch, evaluate, train_one_epoch_depth, evaluate_depth, early_stopping
 from losses import DistillationLoss
 from samplers import RASampler
 from augment import new_data_aug_generator
@@ -180,7 +180,7 @@ def get_args_parser():
                         choices=['kingdom', 'phylum', 'class', 'order', 'supercategory', 'family', 'genus', 'name'],
                         type=str, help='semantic granularity')
 
-    parser.add_argument('--output_dir', default='',
+    parser.add_argument('--output_dir', default='./saved',
                         help='path where to save, empty for no saving')
     parser.add_argument('--device', default='cuda',
                         help='device to use for training / testing')
@@ -494,6 +494,14 @@ def main(args):
              
 
         test_stats = evaluate_depth(data_loader_val, model, device)
+        
+        if epoch % 10 == 0:
+            visualize_depth(model, data_loader_val, device, epoch)
+
+        if early_stopping(test_stats['rmse']):
+            print("Early stopping triggered")
+            break
+            
         # print(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
         
         # if max_accuracy < test_stats["acc1"]:
