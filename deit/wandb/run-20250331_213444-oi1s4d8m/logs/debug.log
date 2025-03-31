@@ -1,0 +1,22 @@
+2025-03-31 21:34:44,313 INFO    MainThread:3595 [wandb_setup.py:_flush():67] Current SDK version is 0.19.8
+2025-03-31 21:34:44,313 INFO    MainThread:3595 [wandb_setup.py:_flush():67] Configure stats pid to 3595
+2025-03-31 21:34:44,313 INFO    MainThread:3595 [wandb_setup.py:_flush():67] Loading settings from /root/.config/wandb/settings
+2025-03-31 21:34:44,313 INFO    MainThread:3595 [wandb_setup.py:_flush():67] Loading settings from /root/RoPE-vit/deit/wandb/settings
+2025-03-31 21:34:44,313 INFO    MainThread:3595 [wandb_setup.py:_flush():67] Loading settings from environment variables
+2025-03-31 21:34:44,313 INFO    MainThread:3595 [wandb_init.py:setup_run_log_directory():647] Logging user logs to /root/RoPE-vit/deit/wandb/run-20250331_213444-oi1s4d8m/logs/debug.log
+2025-03-31 21:34:44,313 INFO    MainThread:3595 [wandb_init.py:setup_run_log_directory():648] Logging internal logs to /root/RoPE-vit/deit/wandb/run-20250331_213444-oi1s4d8m/logs/debug-internal.log
+2025-03-31 21:34:44,314 INFO    MainThread:3595 [wandb_init.py:init():761] calling init triggers
+2025-03-31 21:34:44,314 INFO    MainThread:3595 [wandb_init.py:init():766] wandb.init called with sweep_config: {}
+config: {'batch_size': 64, 'epochs': 300, 'bce_loss': False, 'unscale_lr': False, 'model': 'rope_axial_deit_small_patch16_LS', 'input_size': 224, 'drop': 0.0, 'drop_path': 0.1, 'model_ema': True, 'model_ema_decay': 0.99996, 'model_ema_force_cpu': False, 'opt': 'adamw', 'opt_eps': 1e-08, 'opt_betas': None, 'clip_grad': None, 'momentum': 0.9, 'weight_decay': 0.05, 'sched': 'cosine', 'lr': 0.0005, 'lr_noise': None, 'lr_noise_pct': 0.67, 'lr_noise_std': 1.0, 'warmup_lr': 1e-06, 'min_lr': 1e-05, 'decay_epochs': 30, 'warmup_epochs': 5, 'cooldown_epochs': 10, 'patience_epochs': 10, 'decay_rate': 0.1, 'color_jitter': 0.3, 'aa': 'rand-m9-mstd0.5-inc1', 'smoothing': 0.1, 'train_interpolation': 'bicubic', 'repeated_aug': True, 'train_mode': True, 'ThreeAugment': False, 'src': False, 'reprob': 0.25, 'remode': 'pixel', 'recount': 1, 'resplit': False, 'mixup': 0.0, 'cutmix': 0.0, 'cutmix_minmax': None, 'mixup_prob': 1.0, 'mixup_switch_prob': 0.5, 'mixup_mode': 'batch', 'teacher_model': 'regnety_160', 'teacher_path': '', 'distillation_type': 'none', 'distillation_alpha': 0.5, 'distillation_tau': 1.0, 'cosub': False, 'finetune': '', 'attn_only': False, 'data_path': '/root/autodl-tmp', 'data_set': 'IMNET', 'inat_category': 'name', 'output_dir': '/root/autodl-tmp/saved', 'device': 'cuda', 'seed': 0, 'resume': '', 'start_epoch': 0, 'eval': False, 'eval_crop_ratio': 0.875, 'dist_eval': False, 'num_workers': 10, 'pin_mem': True, 'distributed': False, 'world_size': 1, 'dist_url': 'env://', 'depth_data_path': PosixPath('/root/autodl-tmp'), 'train_one_epoch_depth': PosixPath('/root/autodl-tmp'), 'depth_model': 'rope_axial_depth_deit_small', '_wandb': {}}
+2025-03-31 21:34:44,314 INFO    MainThread:3595 [wandb_init.py:init():784] starting backend
+2025-03-31 21:34:44,314 INFO    MainThread:3595 [wandb_init.py:init():788] sending inform_init request
+2025-03-31 21:34:44,319 INFO    MainThread:3595 [backend.py:_multiprocessing_setup():101] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2025-03-31 21:34:44,319 INFO    MainThread:3595 [wandb_init.py:init():798] backend started and connected
+2025-03-31 21:34:44,328 INFO    MainThread:3595 [wandb_init.py:init():891] updated telemetry
+2025-03-31 21:34:44,341 INFO    MainThread:3595 [wandb_init.py:init():915] communicating run to backend with 90.0 second timeout
+2025-03-31 21:34:45,406 INFO    MainThread:3595 [wandb_init.py:init():990] starting run threads in backend
+2025-03-31 21:34:45,536 INFO    MainThread:3595 [wandb_run.py:_console_start():2375] atexit reg
+2025-03-31 21:34:45,537 INFO    MainThread:3595 [wandb_run.py:_redirect():2227] redirect: wrap_raw
+2025-03-31 21:34:45,537 INFO    MainThread:3595 [wandb_run.py:_redirect():2292] Wrapping output streams.
+2025-03-31 21:34:45,537 INFO    MainThread:3595 [wandb_run.py:_redirect():2315] Redirects installed.
+2025-03-31 21:34:45,539 INFO    MainThread:3595 [wandb_init.py:init():1032] run started, returning control to user process

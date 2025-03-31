@@ -15,8 +15,7 @@ __all__ = [
     'deit_tiny_distilled_patch16_224', 'deit_small_distilled_patch16_224',
     'deit_base_distilled_patch16_224', 'deit_base_patch16_384',
     'deit_base_distilled_patch16_384', 
-    'rope_axial_coord_predictor_tiny',
-    'rope_mixed_coord_predictor_tiny'
+
 ]
 
 

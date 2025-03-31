@@ -1,0 +1,42 @@
+{
+  "os": "Linux-5.15.0-94-generic-x86_64-with-glibc2.35",
+  "python": "CPython 3.10.16",
+  "startedAt": "2025-03-31T13:34:44.320480Z",
+  "program": "/root/RoPE-vit/deit/main.py",
+  "codePath": "deit/main.py",
+  "git": {
+    "remote": "https://github.com/Haiping-Liu/RoPE-vit.git",
+    "commit": "586ec3a243a6b2959f7a95ae3635b25db7f97f3a"
+  },
+  "email": "haiping.liu@postgrad.manchester.ac.uk",
+  "root": "/root/RoPE-vit/deit",
+  "host": "autodl-container-d45f429eca-f9b55d03",
+  "executable": "/root/miniconda3/envs/rope_vit/bin/python",
+  "codePathLocal": "main.py",
+  "cpu_count": 96,
+  "cpu_count_logical": 192,
+  "gpu": "NVIDIA GeForce RTX 4090 D",
+  "gpu_count": 1,
+  "disk": {
+    "/": {
+      "total": "32212254720",
+      "used": "9873301504"
+    }
+  },
+  "memory": {
+    "total": "1081834668032"
+  },
+  "cpu": {
+    "count": 96,
+    "countLogical": 192
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA GeForce RTX 4090 D",
+      "memoryTotal": "25757220864",
+      "cudaCores": 14592,
+      "architecture": "Ada"
+    }
+  ],
+  "cudaVersion": "12.4"
+}

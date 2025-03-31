@@ -1,0 +1,7 @@
+{"time":"2025-03-31T21:34:44.324616928+08:00","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"/root/RoPE-vit/deit/wandb/run-20250331_213444-oi1s4d8m/logs/debug-core.log"}
+{"time":"2025-03-31T21:34:44.444130634+08:00","level":"INFO","msg":"created new stream","id":"oi1s4d8m"}
+{"time":"2025-03-31T21:34:44.444207195+08:00","level":"INFO","msg":"stream: started","id":"oi1s4d8m"}
+{"time":"2025-03-31T21:34:44.444230712+08:00","level":"INFO","msg":"writer: Do: started","stream_id":"oi1s4d8m"}
+{"time":"2025-03-31T21:34:44.444271919+08:00","level":"INFO","msg":"handler: started","stream_id":"oi1s4d8m"}
+{"time":"2025-03-31T21:34:44.444276895+08:00","level":"INFO","msg":"sender: started","stream_id":"oi1s4d8m"}
+{"time":"2025-03-31T21:34:45.451442045+08:00","level":"INFO","msg":"Starting system monitor"}

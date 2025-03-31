@@ -424,6 +424,26 @@ class DepthPredictor(rope_vit_models):
         return depth
 
 @register_model
+def rope_axial_depth_deit_small(pretrained=False, **kwargs):
+    model = DepthPredictor(
+        img_size=kwargs.get('img_size', 224),
+        patch_size=kwargs.get('patch_size', 16),
+        embed_dim=384,
+        depth=12,   
+        num_heads=6,
+        mlp_ratio=4,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        block_layers=RoPE_Layer_scale_init_Block,
+        Attention_block=RoPEAttention,  
+        rope_theta=100.0,
+        rope_mixed=False,
+        **kwargs
+    )
+    model.default_cfg = _cfg()
+    return model
+
+@register_model
 def rope_axial_depth_deit_base(pretrained=False, **kwargs):
     model = DepthPredictor(
         img_size=kwargs.get('img_size', 224),
@@ -438,6 +458,27 @@ def rope_axial_depth_deit_base(pretrained=False, **kwargs):
         Attention_block=RoPEAttention,
         rope_theta=100.0,
         rope_mixed=False,
+        **kwargs
+    )
+    model.default_cfg = _cfg()
+    return model
+
+# mixed model
+@register_model
+def rope_mixed_depth_deit_small(pretrained=False, **kwargs):
+    model = DepthPredictor(
+        img_size=kwargs.get('img_size', 224),
+        patch_size=kwargs.get('patch_size', 16),
+        embed_dim=384,
+        depth=12,
+        num_heads=6,
+        mlp_ratio=4,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        block_layers=RoPE_Layer_scale_init_Block,
+        Attention_block=RoPEAttention,
+        rope_theta=10.0,
+        rope_mixed=True,
         **kwargs
     )
     model.default_cfg = _cfg()
@@ -463,42 +504,3 @@ def rope_mixed_depth_deit_base(pretrained=False, **kwargs):
     model.default_cfg = _cfg()
     return model
 
-@register_model
-def rope_axial_depth_deit_small(pretrained=False, **kwargs):
-    model = DepthPredictor(
-        img_size=kwargs.get('img_size', 224),
-        patch_size=kwargs.get('patch_size', 16),
-        embed_dim=384,
-        depth=12,
-        num_heads=6,
-        mlp_ratio=4,
-        qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        block_layers=RoPE_Layer_scale_init_Block,
-        Attention_block=RoPEAttention,
-        rope_theta=100.0,
-        rope_mixed=False,
-        **kwargs
-    )
-    model.default_cfg = _cfg()
-    return model
-
-@register_model
-def rope_mixed_depth_deit_small(pretrained=False, **kwargs):
-    model = DepthPredictor(
-        img_size=kwargs.get('img_size', 224),
-        patch_size=kwargs.get('patch_size', 16),
-        embed_dim=384,
-        depth=12,
-        num_heads=6,
-        mlp_ratio=4,
-        qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        block_layers=RoPE_Layer_scale_init_Block,
-        Attention_block=RoPEAttention,
-        rope_theta=10.0,
-        rope_mixed=True,
-        **kwargs
-    )
-    model.default_cfg = _cfg()
-    return model

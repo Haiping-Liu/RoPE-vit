@@ -29,6 +29,7 @@ import models_v2_rope
 
 import utils
 
+import wandb
 
 import warnings
 warnings.filterwarnings("ignore", "Argument interpolation should be of type InterpolationMode instead of int. Please, use InterpolationMode enum.")
@@ -55,7 +56,7 @@ def get_args_parser():
     parser.add_argument('--unscale-lr', action='store_true')
 
     # Model parameters
-    parser.add_argument('--model', default='deit_base_patch16_224', type=str, metavar='MODEL',
+    parser.add_argument('--model', default='rope_axial_deit_small_patch16_LS', type=str, metavar='MODEL',
                         help='Name of model to train')
     parser.add_argument('--input-size', default=224, type=int, help='images input size')
 
@@ -180,7 +181,7 @@ def get_args_parser():
                         choices=['kingdom', 'phylum', 'class', 'order', 'supercategory', 'family', 'genus', 'name'],
                         type=str, help='semantic granularity')
 
-    parser.add_argument('--output_dir', default='./saved',
+    parser.add_argument('--output_dir', default='/root/autodl-tmp/saved',
                         help='path where to save, empty for no saving')
     parser.add_argument('--device', default='cuda',
                         help='device to use for training / testing')
@@ -210,7 +211,7 @@ def get_args_parser():
                         help='depth dataset path')
     parser.add_argument('--train_one_epoch_depth', default='/root/autodl-tmp', type=Path,
                         help='depth dataset path')
-    parser.add_argument('--depth_model', default='rope_mixed_depth_deit_base', type=str, metavar='MODEL',
+    parser.add_argument('--depth_model', default='rope_axial_depth_deit_small', type=str, metavar='MODEL',
                         help='fine tune model')
 
     return parser
@@ -223,6 +224,14 @@ def main(args):
 
     if args.distillation_type != 'none' and args.finetune and not args.eval:
         raise NotImplementedError("Finetuning with distillation not yet supported")
+
+    # 初始化wandb
+    if utils.is_main_process():
+        wandb.init(
+            project="rope-vit-depth",
+            config=vars(args),
+            name=f"depth_{args.depth_model}_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        )
 
     device = torch.device(args.device)
 
@@ -464,7 +473,9 @@ def main(args):
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
     max_accuracy = 0.0
-
+    
+    # 创建early stopping实例
+    early_stopping_handler = early_stopping(patience=10, min_delta=0.001)
 
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
@@ -479,48 +490,48 @@ def main(args):
         )
 
         lr_scheduler.step(epoch)
-        if args.output_dir:
-            checkpoint_paths = [output_dir / 'checkpoint.pth']
-            for checkpoint_path in checkpoint_paths:
-                utils.save_on_master({
-                    'model': model_without_ddp.state_dict(),
-                    'optimizer': optimizer.state_dict(),
-                    'lr_scheduler': lr_scheduler.state_dict(),
-                    'epoch': epoch,
-                    'model_ema': get_state_dict(model_ema),
-                    'scaler': loss_scaler.state_dict(),
-                    'args': args,
-                }, checkpoint_path)
+        if epoch % 10 == 0:
+            if args.output_dir:
+                checkpoint_paths = [output_dir / 'checkpoint.pth']
+                for checkpoint_path in checkpoint_paths:
+                    utils.save_on_master({
+                        'model': model_without_ddp.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                        'lr_scheduler': lr_scheduler.state_dict(),
+                        'epoch': epoch,
+                        'model_ema': get_state_dict(model_ema),
+                        'scaler': loss_scaler.state_dict(),
+                        'args': args,
+                    }, checkpoint_path)
              
 
-        test_stats = evaluate_depth(data_loader_val, model, device)
+        test_stats = evaluate_depth(data_loader_val, model, device, epoch)
         
         if epoch % 10 == 0:
             visualize_depth(model, data_loader_val, device, epoch)
 
-        if early_stopping(test_stats['rmse']):
+        # 使用early stopping检查是否应该停止训练
+        early_stopping_handler(test_stats['rmse'])
+        if early_stopping_handler.early_stop:
             print("Early stopping triggered")
             break
             
-        # print(f"Accuracy of the network on the {len(dataset_val)} test images: {test_stats['acc1']:.1f}%")
-        
-        # if max_accuracy < test_stats["acc1"]:
-        #     max_accuracy = test_stats["acc1"]
-        #     if args.output_dir:
-        #         checkpoint_paths = [output_dir / 'best_checkpoint.pth']
-        #         for checkpoint_path in checkpoint_paths:
-        #             utils.save_on_master({
-        #                 'model': model_without_ddp.state_dict(),
-        #                 'optimizer': optimizer.state_dict(),
-        #                 'lr_scheduler': lr_scheduler.state_dict(),
-        #                 'epoch': epoch,
-        #                 'model_ema': get_state_dict(model_ema),
-        #                 'scaler': loss_scaler.state_dict(),
-        #                 'args': args,
-        #             }, checkpoint_path)
+        # 保存最佳模型
+        if test_stats['rmse'] < min_rmse:
+            min_rmse = test_stats['rmse']
+            if args.output_dir:
+                checkpoint_paths = [output_dir / 'best_checkpoint.pth']
+                for checkpoint_path in checkpoint_paths:
+                    utils.save_on_master({
+                        'model': model_without_ddp.state_dict(),
+                        'optimizer': optimizer.state_dict(),
+                        'lr_scheduler': lr_scheduler.state_dict(),
+                        'epoch': epoch,
+                        'model_ema': get_state_dict(model_ema),
+                        'scaler': loss_scaler.state_dict(),
+                        'args': args,
+                    }, checkpoint_path)
             
-        # print(f'Max accuracy: {max_accuracy:.2f}%')
-
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      **{f'test_{k}': v for k, v in test_stats.items()},
                      'epoch': epoch,

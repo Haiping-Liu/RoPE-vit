@@ -1,0 +1,15 @@
+{"time":"2025-03-31T21:24:06.246779275+08:00","level":"INFO","msg":"stream: starting","core version":"0.19.8","symlink path":"/root/RoPE-vit/deit/wandb/run-20250331_212406-xaql5w2j/logs/debug-core.log"}
+{"time":"2025-03-31T21:24:06.37774405+08:00","level":"INFO","msg":"created new stream","id":"xaql5w2j"}
+{"time":"2025-03-31T21:24:06.37785783+08:00","level":"INFO","msg":"stream: started","id":"xaql5w2j"}
+{"time":"2025-03-31T21:24:06.377936018+08:00","level":"INFO","msg":"handler: started","stream_id":"xaql5w2j"}
+{"time":"2025-03-31T21:24:06.377902789+08:00","level":"INFO","msg":"writer: Do: started","stream_id":"xaql5w2j"}
+{"time":"2025-03-31T21:24:06.377936632+08:00","level":"INFO","msg":"sender: started","stream_id":"xaql5w2j"}
+{"time":"2025-03-31T21:24:07.20099687+08:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2025-03-31T21:26:32.353873349+08:00","level":"INFO","msg":"stream: closing","id":"xaql5w2j"}
+{"time":"2025-03-31T21:26:32.35394486+08:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2025-03-31T21:26:32.355275803+08:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2025-03-31T21:26:33.540402626+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-03-31T21:26:34.410974027+08:00","level":"INFO","msg":"handler: closed","stream_id":"xaql5w2j"}
+{"time":"2025-03-31T21:26:34.411050216+08:00","level":"INFO","msg":"sender: closed","stream_id":"xaql5w2j"}
+{"time":"2025-03-31T21:26:34.411041353+08:00","level":"INFO","msg":"writer: Close: closed","stream_id":"xaql5w2j"}
+{"time":"2025-03-31T21:26:34.411328883+08:00","level":"INFO","msg":"stream: closed","id":"xaql5w2j"}

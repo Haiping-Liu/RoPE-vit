@@ -1,0 +1,69 @@
+Creating model: deit_base_patch16_224
+number of params: 86266369
+Start training for 300 epochs
+/root/RoPE-vit/deit/models_v2_rope.py:39: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+Epoch: [0]  [  0/425]  eta: 0:15:47  lr: 0.000001  loss: 24456.0605 (24456.0605)  time: 2.2306  data: 0.5855  max mem: 11218
+Epoch: [0]  [ 10/425]  eta: 0:03:19  lr: 0.000001  loss: 22605.9180 (23184.4909)  time: 0.4818  data: 0.0537  max mem: 12111
+Epoch: [0]  [ 20/425]  eta: 0:02:41  lr: 0.000001  loss: 22605.9180 (23123.5092)  time: 0.3073  data: 0.0005  max mem: 12111
+Epoch: [0]  [ 30/425]  eta: 0:02:25  lr: 0.000001  loss: 22792.0020 (22970.0358)  time: 0.3077  data: 0.0004  max mem: 12111
+Epoch: [0]  [ 40/425]  eta: 0:02:16  lr: 0.000001  loss: 22947.9297 (22977.0528)  time: 0.3078  data: 0.0004  max mem: 12111
+Epoch: [0]  [ 50/425]  eta: 0:02:09  lr: 0.000001  loss: 22778.5195 (22779.0627)  time: 0.3083  data: 0.0004  max mem: 12111
+Epoch: [0]  [ 60/425]  eta: 0:02:03  lr: 0.000001  loss: 22212.8262 (22798.3817)  time: 0.3086  data: 0.0004  max mem: 12111
+Epoch: [0]  [ 70/425]  eta: 0:01:58  lr: 0.000001  loss: 22944.8262 (22748.7140)  time: 0.3087  data: 0.0004  max mem: 12111
+Epoch: [0]  [ 80/425]  eta: 0:01:54  lr: 0.000001  loss: 22940.3770 (22770.0485)  time: 0.3090  data: 0.0005  max mem: 12111
+Epoch: [0]  [ 90/425]  eta: 0:01:50  lr: 0.000001  loss: 22193.8086 (22699.9457)  time: 0.3093  data: 0.0005  max mem: 12111
+Epoch: [0]  [100/425]  eta: 0:01:46  lr: 0.000001  loss: 21964.5000 (22627.5664)  time: 0.3099  data: 0.0004  max mem: 12111
+Epoch: [0]  [110/425]  eta: 0:01:42  lr: 0.000001  loss: 22194.0527 (22645.4752)  time: 0.3103  data: 0.0005  max mem: 12111
+Epoch: [0]  [120/425]  eta: 0:01:39  lr: 0.000001  loss: 22728.7852 (22650.6685)  time: 0.3103  data: 0.0005  max mem: 12111
+Epoch: [0]  [130/425]  eta: 0:01:35  lr: 0.000001  loss: 22667.1426 (22613.8057)  time: 0.3103  data: 0.0004  max mem: 12111
+Epoch: [0]  [140/425]  eta: 0:01:31  lr: 0.000001  loss: 21469.1602 (22537.9088)  time: 0.3103  data: 0.0005  max mem: 12111
+Epoch: [0]  [150/425]  eta: 0:01:28  lr: 0.000001  loss: 21436.2949 (22513.5858)  time: 0.3104  data: 0.0005  max mem: 12111
+Epoch: [0]  [160/425]  eta: 0:01:25  lr: 0.000001  loss: 22180.1875 (22494.2354)  time: 0.3107  data: 0.0005  max mem: 12111
+Epoch: [0]  [170/425]  eta: 0:01:21  lr: 0.000001  loss: 22380.0879 (22503.9613)  time: 0.3109  data: 0.0005  max mem: 12111
+Epoch: [0]  [180/425]  eta: 0:01:18  lr: 0.000001  loss: 22446.6348 (22496.3038)  time: 0.3112  data: 0.0005  max mem: 12111
+Epoch: [0]  [190/425]  eta: 0:01:15  lr: 0.000001  loss: 22791.2324 (22516.8664)  time: 0.3115  data: 0.0004  max mem: 12111
+Epoch: [0]  [200/425]  eta: 0:01:11  lr: 0.000001  loss: 22857.9902 (22496.7112)  time: 0.3117  data: 0.0004  max mem: 12111
+Epoch: [0]  [210/425]  eta: 0:01:08  lr: 0.000001  loss: 21939.7852 (22465.7378)  time: 0.3120  data: 0.0004  max mem: 12111
+Epoch: [0]  [220/425]  eta: 0:01:05  lr: 0.000001  loss: 22374.4277 (22459.5150)  time: 0.3120  data: 0.0004  max mem: 12111
+Epoch: [0]  [230/425]  eta: 0:01:02  lr: 0.000001  loss: 22075.9492 (22425.8146)  time: 0.3121  data: 0.0004  max mem: 12111
+Epoch: [0]  [240/425]  eta: 0:00:58  lr: 0.000001  loss: 22040.2031 (22420.7008)  time: 0.3123  data: 0.0004  max mem: 12111
+Epoch: [0]  [250/425]  eta: 0:00:55  lr: 0.000001  loss: 22177.0293 (22401.8890)  time: 0.3124  data: 0.0004  max mem: 12111
+Epoch: [0]  [260/425]  eta: 0:00:52  lr: 0.000001  loss: 21924.1484 (22403.7954)  time: 0.3126  data: 0.0004  max mem: 12111
+Epoch: [0]  [270/425]  eta: 0:00:49  lr: 0.000001  loss: 22394.3496 (22392.7433)  time: 0.3127  data: 0.0004  max mem: 12111
+Epoch: [0]  [280/425]  eta: 0:00:46  lr: 0.000001  loss: 22197.0117 (22383.9407)  time: 0.3127  data: 0.0005  max mem: 12111
+Epoch: [0]  [290/425]  eta: 0:00:42  lr: 0.000001  loss: 21792.8926 (22364.5965)  time: 0.3127  data: 0.0005  max mem: 12111
+Epoch: [0]  [300/425]  eta: 0:00:39  lr: 0.000001  loss: 21792.8926 (22343.7551)  time: 0.3129  data: 0.0005  max mem: 12111
+Epoch: [0]  [310/425]  eta: 0:00:36  lr: 0.000001  loss: 21461.1172 (22309.5741)  time: 0.3128  data: 0.0005  max mem: 12111
+Epoch: [0]  [320/425]  eta: 0:00:33  lr: 0.000001  loss: 21460.1582 (22278.3780)  time: 0.3129  data: 0.0005  max mem: 12111
+Epoch: [0]  [330/425]  eta: 0:00:30  lr: 0.000001  loss: 21466.3770 (22272.9114)  time: 0.3134  data: 0.0005  max mem: 12111
+Epoch: [0]  [340/425]  eta: 0:00:26  lr: 0.000001  loss: 21466.3770 (22273.4404)  time: 0.3132  data: 0.0005  max mem: 12111
+Epoch: [0]  [350/425]  eta: 0:00:23  lr: 0.000001  loss: 21896.1328 (22265.9368)  time: 0.3129  data: 0.0004  max mem: 12111
+Epoch: [0]  [360/425]  eta: 0:00:20  lr: 0.000001  loss: 21787.3926 (22239.7068)  time: 0.3128  data: 0.0004  max mem: 12111
+Epoch: [0]  [370/425]  eta: 0:00:17  lr: 0.000001  loss: 20946.1914 (22224.6365)  time: 0.3128  data: 0.0004  max mem: 12111
+Epoch: [0]  [380/425]  eta: 0:00:14  lr: 0.000001  loss: 21832.5781 (22226.0797)  time: 0.3128  data: 0.0004  max mem: 12111
+Epoch: [0]  [390/425]  eta: 0:00:11  lr: 0.000001  loss: 22164.9238 (22209.0130)  time: 0.3129  data: 0.0004  max mem: 12111
+Epoch: [0]  [400/425]  eta: 0:00:07  lr: 0.000001  loss: 20995.6621 (22186.2987)  time: 0.3128  data: 0.0004  max mem: 12111
+Epoch: [0]  [410/425]  eta: 0:00:04  lr: 0.000001  loss: 20995.6621 (22160.9778)  time: 0.3125  data: 0.0005  max mem: 12111
+Epoch: [0]  [420/425]  eta: 0:00:01  lr: 0.000001  loss: 21380.4160 (22142.6556)  time: 0.3126  data: 0.0004  max mem: 12111
+Epoch: [0]  [424/425]  eta: 0:00:00  lr: 0.000001  loss: 21380.4160 (22140.7162)  time: 0.3128  data: 0.0003  max mem: 12111
+Epoch: [0] Total time: 0:02:14 (0.3160 s / it)
+Averaged stats: lr: 0.000001  loss: 21380.4160 (22140.7162)
+/root/RoPE-vit/deit/engine.py:192: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+Test:  [ 0/32]  eta: 0:00:55  loss: 23750.5156 (23750.5156)  time: 1.7278  data: 1.1680  max mem: 12111
+Test:  [10/32]  eta: 0:00:06  loss: 23750.5156 (23204.0065)  time: 0.2931  data: 0.1065  max mem: 12111
+Test:  [20/32]  eta: 0:00:02  loss: 20801.0781 (21663.4102)  time: 0.1497  data: 0.0003  max mem: 12111
+Test:  [30/32]  eta: 0:00:00  loss: 20342.1426 (21530.2259)  time: 0.1497  data: 0.0002  max mem: 12111
+Test:  [31/32]  eta: 0:00:00  loss: 20319.4414 (21492.0416)  time: 0.1487  data: 0.0002  max mem: 12111
+Test: Total time: 0:00:06 (0.2005 s / it)
+Traceback (most recent call last):
+  File "/root/RoPE-vit/deit/main.py", line 556, in <module>
+    main(args)
+  File "/root/RoPE-vit/deit/main.py", line 507, in main
+    test_stats = evaluate_depth(data_loader_val, model, device)
+  File "/root/miniconda3/envs/rope_vit/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/root/RoPE-vit/deit/engine.py", line 240, in evaluate_depth
+    }, step=epoch)
+NameError: name 'epoch' is not defined

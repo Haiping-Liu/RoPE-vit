@@ -171,7 +171,7 @@ def train_one_epoch_depth(model: torch.nn.Module, criterion: torch.nn.Module,
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 @torch.no_grad()
-def evaluate_depth(data_loader, model, device):
+def evaluate_depth(data_loader, model, device, epoch):
     criterion = torch.nn.MSELoss()
     metric_logger = utils.MetricLogger(delimiter="  ")
     header = 'Test:'
@@ -253,7 +253,7 @@ def evaluate_depth(data_loader, model, device):
     }
 
 
-class EarlyStopping:
+class early_stopping:
     def __init__(self, patience=10, min_delta=0.001):
         self.patience = patience
         self.min_delta = min_delta
